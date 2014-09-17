@@ -19,6 +19,7 @@ local function new_cursor(col, query, returnfields, num_each_query)
 
             done = false ;
             i = 0;
+            localIndex=0;
             limit_n = 0;
             num_each = num_each_query;
         } , cursor_mt )
@@ -96,16 +97,18 @@ end
 function cursor_methods:next()
     if self.limit_n > 0 and self.i >= self.limit_n then return nil end
 
-    local v = self.results [ self.i + 1 ]
+    local v = self.results [ self.localIndex + 1 ]
     if v ~= nil then
         self.i = self.i + 1
-        self.results [ self.i ] = nil
+        self.localIndex = self.localIndex +1
+        self.results [ self.localIndex ] = nil
         return self.i , v
     end
 
     if self.done then return nil end
 
     local t
+    self.localIndex  =0
     if not self.id then
         self.id, self.results, t = self.col:query(self.query, 
                         self.returnfields, self.i, self.num_each)
