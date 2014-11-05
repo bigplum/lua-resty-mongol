@@ -10,6 +10,7 @@ local t_concat = table.concat
 local strformat = string.format
 local strmatch = string.match
 local strbyte = string.byte
+local floor = math.floor
 
 local ll = require ( mod_name .. ".ll" )
 local le_uint_to_num = ll.le_uint_to_num
@@ -80,7 +81,7 @@ local function read_document ( get , numerical )
 		end
 
 		if numerical then
-			t [ tonumber ( e_name ) ] = v
+			t [ tonumber ( e_name ) + 1] = v
 		else
 			t [ e_name ] = v
 		end
@@ -124,7 +125,15 @@ local function pack ( k , v )
 	local mt = getmetatable ( v )
 
 	if ot == "number" then
-		return "\1" .. k .. "\0" .. to_double ( v )
+        if floor(v) == v then
+            if v >= -2^31 and v <= 2^31-1 then --int32
+                return "\16" .. k .. "\0" .. num_to_le_int ( v )
+            else --int64
+                return "\18" .. k .. "\0" .. num_to_le_int ( v, 8 )
+            end
+        else
+            return "\1" .. k .. "\0" .. to_double ( v )
+        end
 	elseif ot == "nil" then
 		return "\10" .. k .. "\0"
 	elseif ot == "string" then
@@ -149,6 +158,8 @@ local function pack ( k , v )
 		else
 			return "\3" .. k .. "\0" .. doc
 		end
+    elseif ot == "userdata" and tostring(v) == "userdata: NULL" then
+        return "\10" .. k .. "\0"
 	else
 		error ( "Failure converting " .. ot ..": " .. tostring ( v ) )
 	end
@@ -186,10 +197,10 @@ function to_bson(ob)
 	elseif onlyarray then
 		local r = { }
 
-		local low = 0
+		local low = 1
 		--if seen_n [ 0 ] then low = 0 end
 		for i=low , high_n do
-			r [ i ] = pack ( i , seen_n [ i ] )
+			r [ i ] = pack ( i - 1 , seen_n [ i ] )
 		end
 
 		m = t_concat ( r , "" , low , high_n )
