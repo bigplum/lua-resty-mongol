@@ -66,7 +66,11 @@ local function read_document ( get , numerical )
 				error ( f:byte ( ) )
 			end
 		elseif op == "\9" then -- UTC datetime milliseconds
-			v = le_uint_to_num ( get ( 8 ) , 1 , 8 )
+			sec = le_uint_to_num ( get ( 8 ) , 1 , 8 )
+            v = {}
+            v.sec = sec/1000
+            v.usec= sec % 1000
+			--v = le_uint_to_num ( get ( 8 ) , 1 , 8 )
 		elseif op == "\10" then -- Null
 			v = nil
 		elseif op == "\16" then --int32
@@ -78,9 +82,14 @@ local function read_document ( get , numerical )
 		else
 			error ( "Unknown BSON type: " .. strbyte ( op ) )
 		end
-
+        
 		if numerical then
-			t [ tonumber ( e_name ) ] = v
+			local n_name = tonumber(e_name)
+			if (n_name>0) and (not t[n_name])  then
+				t[n_name] = v
+			else
+				t [ n_name + 1 ] = v
+			end
 		else
 			t [ e_name ] = v
 		end
@@ -186,10 +195,10 @@ function to_bson(ob)
 	elseif onlyarray then
 		local r = { }
 
-		local low = 0
+		local low = 1
 		--if seen_n [ 0 ] then low = 0 end
 		for i=low , high_n do
-			r [ i ] = pack ( i , seen_n [ i ] )
+			r [ i ] = pack ( i-1 , seen_n [ i ] )
 		end
 
 		m = t_concat ( r , "" , low , high_n )
