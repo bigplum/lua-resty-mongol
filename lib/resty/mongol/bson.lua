@@ -66,11 +66,7 @@ local function read_document ( get , numerical )
 				error ( f:byte ( ) )
 			end
 		elseif op == "\9" then -- UTC datetime milliseconds
-			sec = le_uint_to_num ( get ( 8 ) , 1 , 8 )
-            v = {}
-            v.sec = sec/1000
-            v.usec= sec % 1000
-			--v = le_uint_to_num ( get ( 8 ) , 1 , 8 )
+			v = le_uint_to_num ( get ( 8 ) , 1 , 8 )
 		elseif op == "\10" then -- Null
 			v = nil
 		elseif op == "\16" then --int32
