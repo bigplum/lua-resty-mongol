@@ -53,7 +53,7 @@ else
 end
 machineid = ngx.md5_bin(machineid):sub(1, 3)
 
-local pid = num_to_le_uint(bit.band(ngx.var.pid, 0xFFFF), 2)
+local pid = num_to_le_uint(bit.band(ngx.worker.pid(), 0xFFFF), 2)
 
 local inc = 0
 local function generate_id ( )
