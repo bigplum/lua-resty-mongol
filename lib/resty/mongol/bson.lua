@@ -177,8 +177,8 @@ function to_bson(ob)
 			if t_k == "number" and k >= 0 then
 				if k >= high_n then
 					high_n = k
-					seen_n [ k ] = v
 				end
+				seen_n [ k ] = v
 			else
 				onlyarray = false
 			end
