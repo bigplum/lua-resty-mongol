@@ -57,7 +57,6 @@ local num_to_be_uint = function ( n , bytes )
 	for i=bytes , 1 , -1 do
 		b [ i ] , n = n % 2^8 , floor ( n / 2^8 )
 	end
-	assert ( n == 0 )
 	return strchar ( unpack ( b ) )
 end
 
