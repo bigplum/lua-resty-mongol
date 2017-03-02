@@ -80,7 +80,7 @@ local function read_document ( get , numerical )
 		end
 
 		if numerical then
-			t [ tonumber ( e_name ) ] = v
+			t [ tonumber ( e_name ) + 1 ] = v
 		else
 			t [ e_name ] = v
 		end
@@ -140,7 +140,7 @@ local function pack ( k , v )
 	elseif mt == utc_date then
 		return "\9" .. k .. "\0" .. num_to_le_int(v.v, 8)
 	elseif mt == binary_mt then
-		return "\5" .. k .. "\0" .. num_to_le_uint(string.len(v.v)) .. 
+		return "\5" .. k .. "\0" .. num_to_le_uint(string.len(v.v)) ..
                v.st .. v.v
 	elseif ot == "table" then
 		local doc , array = to_bson(v)
@@ -186,10 +186,10 @@ function to_bson(ob)
 	elseif onlyarray then
 		local r = { }
 
-		local low = 0
+		local low = 1
 		--if seen_n [ 0 ] then low = 0 end
 		for i=low , high_n do
-			r [ i ] = pack ( i , seen_n [ i ] )
+			r [ i ] = pack ( i - 1 , seen_n [ i ] )
 		end
 
 		m = t_concat ( r , "" , low , high_n )
