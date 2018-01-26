@@ -9,10 +9,9 @@ local ll = { }
 
 local le_uint_to_num = function ( s , i , j )
 	i , j = i or 1 , j or #s
-	local b = { strbyte ( s , i , j ) }
 	local n = 0
-	for i=#b , 1 , -1 do
-		n = n*2^8 + b [ i ]
+	for k = j, i, -1 do
+		n = n*2^8 + strbyte(s, k, k)
 	end
 	return n
 end
