@@ -85,7 +85,8 @@ function connmethods:set_timeout(timeout)
         return nil, "not initialized"
     end
 
-    return sock:settimeout(timeout)
+    sock:settimeout(timeout)
+    return true, "sucucess"
 end
 
 function connmethods:set_keepalive(...)
