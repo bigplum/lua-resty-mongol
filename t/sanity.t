@@ -10,7 +10,7 @@ plan tests => repeat_each() * (3 * blocks());
 my $pwd = cwd();
 
 our $HttpConfig = qq{
-    lua_package_path "$pwd/lib/?/init.lua;;";
+    lua_package_path "$pwd/lib/?.lua;$pwd/lib/?/init.lua;;";
 };
 
 $ENV{TEST_NGINX_RESOLVER} = '8.8.8.8';
@@ -23,14 +23,14 @@ run_tests();
 
 __DATA__
 
-=== TEST 1: col insert 
+=== TEST 1: col insert
 --- http_config eval: $::HttpConfig
 --- config
     location /t {
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -49,7 +49,7 @@ __DATA__
             r, err = col:delete({}, nil, true)
             if not r then ngx.say("delete failed: "..err) end
 
-            r, err = col:insert({{name="dog",n=10,m=20}, {name="cat"}}, 
+            r, err = col:insert({{name="dog",n=10,m=20}, {name="cat"}},
                         nil, true)
             if not r then ngx.say("insert failed: "..err) end
             ngx.say(r)
@@ -75,7 +75,7 @@ dog
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
             ok, err = conn:connect("127.0.0.1", 27016)
 
             if not ok then
@@ -97,7 +97,7 @@ connect failed: connection refused
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
 
             ok, err = conn:connect("127.0.0.1")
             if not ok then
@@ -133,7 +133,7 @@ GET /t
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
 
             ok, err = conn:connect("127.0.0.1")
             if not ok then
@@ -171,7 +171,7 @@ GET /t
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
 
             local r, err = conn:connect("127.0.0.1")
             if not r then ngx.say("connect failed: "..err) end
@@ -249,7 +249,7 @@ cat
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
 
             ok, err = conn:connect("127.0.0.1")
             if not ok then
@@ -292,7 +292,7 @@ GET /t
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
 
             ok, err = conn:connect("127.0.0.1")
             if not ok then
@@ -351,7 +351,7 @@ nil
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(1000) 
+            conn:set_timeout(1000)
 
             ok, err = conn:connect("127.0.0.1")
             if not ok then
@@ -398,7 +398,7 @@ ns not found
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
 
             local ok, err = conn:connect("127.0.0.1",27017)
             if not ok then
@@ -426,13 +426,13 @@ ns not found
             if not r then
                 ngx.say("not found")
             end
-            ngx.say(r["n"]) 
+            ngx.say(r["n"])
 
             r = col:find_one({name="puppy"}, {n=0})
             if not r then
                 ngx.say("not found")
             end
-            ngx.say(r["n"]) 
+            ngx.say(r["n"])
 
             r = col:find_one({name="p"})
             if not r then
@@ -449,14 +449,14 @@ not found
 --- no_error_log
 [error]
 
-=== TEST 15: col delete safe 
+=== TEST 15: col delete safe
 --- http_config eval: $::HttpConfig
 --- config
     location /t {
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
 
             local ok, err = conn:connect("127.0.0.1")
             if not ok then
@@ -529,7 +529,7 @@ delete failed: need to login
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -553,7 +553,7 @@ delete failed: need to login
             t2[2]="a20"
             t2[3] = "a21"
             t2[4] = "a22"
-            
+
             r, err = col:insert({{name="dog",n="10",tab=t,tab1=t1,tab2=t2}}, nil, true)
             if not r then ngx.say("insert failed: "..err) end
             ngx.say(r)
@@ -596,7 +596,7 @@ a20
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -613,7 +613,7 @@ a20
             if not r then ngx.say("delete failed: "..err) end
 
             local t = {0}
-            
+
             r, err = col:insert({{name="dog",n="10",tab=t}}, nil, true)
             if not r then ngx.say("insert failed: "..err) end
             ngx.say(r)
@@ -646,7 +646,7 @@ nil
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -670,7 +670,7 @@ nil
             t2[2] = "a22"
             t2[3] = "a23"
             t2[4] = "a24"
-            
+
             r, err = col:insert({{name="dog",n="10",tab=t,tab1=t1,tab2=t2}}, nil, true)
             if not r then ngx.say("insert failed: "..err) end
             ngx.say(r)
@@ -715,7 +715,7 @@ a25
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -732,7 +732,7 @@ a25
             if not r then ngx.say("delete failed: "..err) end
 
             local t = {a=1,b=2}
-            
+
             r, err = col:insert({{name="dog",n="10",tab=t}}, nil, true)
             if not r then ngx.say("insert failed: "..err) end
             ngx.say(r)
@@ -764,7 +764,7 @@ GET /t
         access_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -781,7 +781,7 @@ GET /t
             if not r then ngx.say("delete failed: "..err) end
 
             local t = {a=1,b=2}
-            
+
             r, err = col:insert({{name="dog",n="10"},tab=t}, nil, true)
             if not r then ngx.say("insert failed: "..err) end
 
@@ -807,7 +807,7 @@ GET /t
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -824,7 +824,7 @@ GET /t
             if not r then ngx.say("delete failed: "..err) end
 
             local t = {a=1,b=2}
-            
+
             for i = 1, 10 do
                 col:insert({{name="puppy"}})
             end
@@ -854,7 +854,7 @@ GET /t
         content_by_lua '
             local mongo = require "resty.mongol"
             conn = mongo:new()
-            conn:set_timeout(10000) 
+            conn:set_timeout(10000)
             ok, err = conn:connect("127.0.0.1")
 
             if not ok then
@@ -871,7 +871,7 @@ GET /t
             if not r then ngx.say("delete failed: "..err) end
 
             col:insert({ {photos={"1","2"} } })
-            
+
             r = col:find_one({})
             for i , v in pairs(r["photos"]) do
                 ngx.say(i)
