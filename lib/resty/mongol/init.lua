@@ -12,6 +12,8 @@ local connmethods = { }
 local connmt = { __index = connmethods }
 
 local dbmt = require ( mod_name .. ".dbmt" )
+local bson = require ( mod_name .. ".bson" )
+null = bson.bson_null
 
 function connmethods:ismaster()
     local db = self:new_db_handle("admin")

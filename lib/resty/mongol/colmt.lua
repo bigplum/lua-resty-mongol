@@ -218,7 +218,9 @@ function colmethods:query(query, returnfields, numberToSkip, numberToReturn, opt
             + 2^7*( options.Partial and 1 or 0 )
     end
 
-    query = to_bson(query)
+    if type(query) ~= "string" then
+        query = to_bson(query)
+    end
     if returnfields then
         returnfields = to_bson(returnfields)
     else

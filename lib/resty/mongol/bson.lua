@@ -27,6 +27,7 @@ local new_object_id = obid.new
 local object_id_mt = obid.metatable
 local binary_mt = {}
 local utc_date = {}
+local bson_null = {}
 
 
 local function read_document ( get , numerical )
@@ -68,7 +69,7 @@ local function read_document ( get , numerical )
 		elseif op == "\9" then -- UTC datetime milliseconds
 			v = le_uint_to_num ( get ( 8 ) , 1 , 8 )
 		elseif op == "\10" then -- Null
-			v = nil
+			v = bson_null
 		elseif op == "\16" then --int32
 			v = le_int_to_num ( get ( 4 ) , 1 , 8 )
         elseif op == "\17" then --int64
@@ -209,8 +210,9 @@ function to_bson(ob)
 end
 
 return {
-	from_bson = from_bson ;
-	to_bson = to_bson ;
+    from_bson = from_bson;
+    to_bson = to_bson;
+    bson_null = bson_null;
     get_bin_data = get_bin_data;
     get_utc_date = get_utc_date;
 }
