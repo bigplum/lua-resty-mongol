@@ -186,7 +186,7 @@ function to_bson(ob)
 	elseif onlyarray then
 		local r = { }
 
-		local low = 0
+		local low = 1
 		--if seen_n [ 0 ] then low = 0 end
 		for i=low , high_n do
 			r [ i ] = pack ( i , seen_n [ i ] )
